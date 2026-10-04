@@ -1,0 +1,121 @@
+/* =========================================================
+   CINEMATIC SLOW-MOTION PAGE TRANSITION SYSTEM
+   Ushas Herbal Beauty Parlour
+========================================================= */
+
+/* The full-screen cinematic veil */
+#cinematic-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at 50% 45%, rgba(255, 245, 248, 0.96) 0%, rgba(250, 225, 235, 0.98) 55%, rgba(235, 195, 212, 0.99) 100%);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    z-index: 9999999;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+#cinematic-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+}
+
+/* Cinematic glowing sparkling emblem */
+.cinematic-sparkle {
+    font-size: 42px;
+    color: #d94f7d;
+    filter: drop-shadow(0 0 20px rgba(217, 79, 125, 0.65));
+    animation: cinematicPulse 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+}
+
+.cinematic-text {
+    font-family: "Playfair Display", serif;
+    font-size: 15px;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: #8c4360;
+    font-weight: 600;
+    animation: cinematicFadeText 1.6s ease-in-out infinite alternate;
+}
+
+/* Subtle top golden/rose shimmer bar */
+.cinematic-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, #d94f7d, #ef9b43, #7c5cfc, #d94f7d);
+    background-size: 300% 100%;
+    box-shadow: 0 0 14px rgba(217, 79, 125, 0.8);
+    transition: width 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: cinematicBarShimmer 2s linear infinite;
+}
+
+#cinematic-overlay.active .cinematic-bar {
+    width: 100%;
+}
+
+@keyframes cinematicPulse {
+    0% {
+        transform: scale(0.88) rotate(-12deg);
+        filter: drop-shadow(0 0 10px rgba(217, 79, 125, 0.35));
+        opacity: 0.65;
+    }
+    100% {
+        transform: scale(1.22) rotate(15deg);
+        filter: drop-shadow(0 0 28px rgba(217, 79, 125, 0.9));
+        opacity: 1;
+    }
+}
+
+@keyframes cinematicFadeText {
+    0% { opacity: 0.55; letter-spacing: 2.5px; }
+    100% { opacity: 1; letter-spacing: 4px; }
+}
+
+@keyframes cinematicBarShimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+/* Page exit state: body elements gently lift, blur, and fade in slow motion */
+body.is-transitioning > *:not(#cinematic-overlay):not(#iridescence-bg) {
+    transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), filter 0.75s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform: translateY(-16px) scale(0.985);
+    opacity: 0.1;
+    filter: blur(6px);
+}
+
+/* Page entry animation: slow-motion cinematic bloom and rise */
+body.cinematic-entry-ready > *:not(#cinematic-overlay):not(#iridescence-bg) {
+    animation: cinematicPageBloom 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes cinematicPageBloom {
+    0% {
+        opacity: 0;
+        transform: translateY(24px) scale(0.985);
+        filter: blur(8px);
+    }
+    55% {
+        opacity: 0.85;
+        filter: blur(1.5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0px);
+    }
+}

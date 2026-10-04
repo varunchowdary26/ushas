@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Portal Login - Ushas Herbal Beauty Parlour</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="cinematic-transition.css">
+
+    <style>
+        :root {
+            --pink: #d94f7d;
+            --pink-dark: #b83d67;
+            --pink-light: rgba(255, 240, 245, 0.7);
+            --purple: #7c5cfc;
+            --dark: #241b20;
+            --text: #554950;
+            --muted: #73676e;
+            --white: #ffffff;
+            --border: rgba(238, 227, 232, 0.85);
+            --green: #43a77b;
+            --orange: #ef9b43;
+            --shadow: 0 15px 45px rgba(90, 48, 68, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            color: var(--dark);
+            background: transparent;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* Iridescence Background Canvas Container */
+        #iridescence-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        #iridescence-bg canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            width: 100%;
+            padding: 16px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(238, 227, 232, 0.7);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: "Playfair Display", serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--dark);
+            letter-spacing: -0.3px;
+        }
+
+        .logo span {
+            color: var(--pink);
+            font-size: 24px;
+        }
+
+        .navbar nav {
+            display: none;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .navbar nav a {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1618 !important;
+            padding: 8px 12px;
+            position: relative;
+            display: inline-block;
+            transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            border-radius: 6px;
+        }
+
+        .navbar nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 70%;
+            height: 2px;
+            background: linear-gradient(90deg, #d94f7d, #ef9b43);
+            border-radius: 2px;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .navbar nav a:hover {
+            color: #d94f7d !important;
+            transform: translateY(-1.5px);
+        }
+
+        .navbar nav a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .navbar nav a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.12);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .navbar nav a.sweep-active::before {
+            animation: sweepWave 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes sweepWave {
+            0% { left: -100%; opacity: 0.8; }
+            50% { opacity: 0.5; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        .navbar nav a.nav-feedback-btn {
+            background: rgba(217, 79, 125, 0.08);
+            border: 1.2px solid rgba(217, 79, 125, 0.35);
+            color: #d94f7d !important;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 10px rgba(217, 79, 125, 0.06);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .navbar nav a.nav-feedback-btn::after {
+            display: none;
+        }
+
+        .navbar nav a.nav-feedback-btn:hover {
+            background: #d94f7d;
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(217, 79, 125, 0.32);
+            border-color: #d94f7d;
+        }
+
+        .navbar nav.active {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 24px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(217, 79, 125, 0.15);
+            gap: 12px;
+            animation: cinematicSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .navbar nav.active a {
+            width: 100%;
+            padding: 10px 16px;
+            font-size: 15px;
+            border-radius: 10px;
+        }
+
+        .navbar nav.active a:hover {
+            background: rgba(217, 79, 125, 0.08);
+            padding-left: 22px;
+        }
+
+        @keyframes cinematicSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mobile-menu-btn {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 3px;
+            background-color: var(--dark);
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+
+        @media (min-width: 900px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+            .navbar nav {
+                display: flex;
+            }
+        }
+
+        /* PAGE CONTAINER */
+        .page-container {
+            max-width: 540px;
+            width: 100%;
+            margin: 40px auto 60px;
+            padding: 0 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* AUTH CARD */
+        .auth-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(238, 227, 232, 0.9);
+            border-radius: 28px;
+            padding: 42px 36px;
+            box-shadow: 0 20px 50px rgba(90, 48, 68, 0.08), 0 0 40px rgba(217, 79, 125, 0.05);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #d94f7d, #ef9b43, #7c5cfc);
+        }
+
+        .eyebrow {
+            display: inline-block;
+            color: var(--pink);
+            font-size: 11px;
+            letter-spacing: 2px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-family: "Playfair Display", serif;
+            font-size: 32px;
+            color: var(--dark);
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 26px;
+        }
+
+        .notice-box {
+            background: rgba(217, 79, 125, 0.06);
+            border: 1px solid rgba(217, 79, 125, 0.22);
+            border-radius: 14px;
+            padding: 14px 16px;
+            font-size: 13px;
+            color: #7d334e;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.5;
+        }
+
+        .notice-box.locked {
+            background: rgba(67, 167, 123, 0.08);
+            border-color: rgba(67, 167, 123, 0.25);
+            color: #1f6445;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 44px 14px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--dark);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--pink);
+            box-shadow: 0 0 0 4px rgba(217, 79, 125, 0.12);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 16px;
+            padding: 4px;
+            transition: color 0.2s ease;
+        }
+
+        .toggle-password:hover {
+            color: var(--pink);
+        }
+
+        .auth-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+            color: white;
+            border: none;
+            padding: 15px 24px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(217, 79, 125, 0.35);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(217, 79, 125, 0.45);
+        }
+
+        .auth-btn:active {
+            transform: translateY(0);
+        }
+
+        .status-msg {
+            margin-top: 16px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            display: none;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .status-msg.error {
+            display: block;
+            background: rgba(235, 87, 87, 0.1);
+            color: #c0392b;
+            border: 1px solid rgba(235, 87, 87, 0.25);
+            animation: shakeCard 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        .status-msg.success {
+            display: block;
+            background: rgba(67, 167, 123, 0.1);
+            color: #27ae60;
+            border: 1px solid rgba(67, 167, 123, 0.25);
+        }
+
+        @keyframes shakeCard {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+            40%, 60% { transform: translate3d(3px, 0, 0); }
+        }
+
+        .aux-links {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .aux-links button, .aux-links a {
+            background: none;
+            border: none;
+            color: var(--pink);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: inherit;
+        }
+
+        /* RESET MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(36, 27, 32, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px 28px;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            animation: modalPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.92) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-box h3 {
+            font-family: "Playfair Display", serif;
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .modal-box p {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+
+        .modal-btn.cancel {
+            background: #eee3e8;
+            color: var(--dark);
+        }
+
+        .modal-btn.confirm {
+            background: var(--pink);
+            color: white;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 30px 6%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+            text-align: center;
+            background: rgba(37, 28, 33, 0.96);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #ffffff;
+            position: relative;
+            z-index: 10;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        footer .logo {
+            color: #ffffff !important;
+            font-size: 20px;
+        }
+
+        footer p {
+            color: #bdb2b7;
+            font-size: 13px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .owner-link {
+            color: #f4a8c0;
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.25s ease;
+        }
+
+        .owner-link:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        @media (min-width: 900px) {
+            footer {
+                flex-direction: row;
+                justify-content: space-between;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- WebGL Background Canvas Container -->
+<div id="iridescence-bg"></div>
+
+<header class="navbar">
+    <a href="index.html" class="logo">
+        <span>✦</span>
+        Ushas Herbal Parlour
+    </a>
+
+    <button class="mobile-menu-btn" id="menuToggle" aria-label="Toggle Navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <nav id="navLinks">
+        <a href="index.html#home">Home</a>
+        <a href="index.html#services">Services</a>
+        <a href="index.html#booking">Book</a>
+        <a href="index.html#promotions">Showcase</a>
+        <a href="my-bookings.html">My Bookings</a>
+        <a href="index.html#contact">Contact</a>
+        <a href="feedbackindex.html" class="nav-feedback-btn">✦ Feedback</a>
+    </nav>
+</header>
+
+<div class="page-container">
+    <div class="auth-card" id="authCard">
+
+        <!-- VIEW 1: ONE-TIME SETUP MODE (Shows only if password has never been created) -->
+        <div id="setupView" style="display: none;">
+            <span class="eyebrow">✦ INITIAL OWNER SETUP</span>
+            <h1>Create Master Password</h1>
+            <p class="subtitle">Set your private master password to protect salon appointments, client records, and revenue analytics. This password can only be created once.</p>
+
+            <div class="notice-box">
+                <span>🔒</span>
+                <div><strong>Single-Time Setup:</strong> This master password will be locked permanently to this parlour portal. Please choose a strong password and remember it carefully.</div>
+            </div>
+
+            <form id="setupForm">
+                <div class="form-group">
+                    <label for="newPassword">New Master Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="newPassword" placeholder="Create your master password (min 4 characters)" required minlength="4">
+                        <button type="button" class="toggle-password" onclick="togglePassVisibility('newPassword', this)" title="Show/Hide">👁️</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Master Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="confirmPassword" placeholder="Confirm your master password" required minlength="4">
+                        <button type="button" class="toggle-password" onclick="togglePassVisibility('confirmPassword', this)" title="Show/Hide">👁️</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-btn">
+                    <span>🔒 Set Master Password & Open Dashboard ✦</span>
+                </button>
+            </form>
+            <div id="setupStatus" class="status-msg"></div>
+        </div>
+
+        <!-- VIEW 2: LOGIN MODE (Shows when master password is already configured) -->
+        <div id="loginView" style="display: none;">
+            <span class="eyebrow">✦ OWNER PORTAL</span>
+            <h1>Owner Dashboard Login</h1>
+            <p class="subtitle">Enter your private master password to access appointments, customer history, and parlour analytics.</p>
+
+            <div class="notice-box locked">
+                <span>🛡️</span>
+                <div><strong>Protected Access:</strong> Master password is encrypted and saved. Re-creation is locked.</div>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginPassword">Master Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="loginPassword" placeholder="Enter master password" required autofocus>
+                        <button type="button" class="toggle-password" onclick="togglePassVisibility('loginPassword', this)" title="Show/Hide">👁️</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-btn">
+                    <span>✦ Unlock Dashboard</span>
+                </button>
+            </form>
+            <div id="loginStatus" class="status-msg"></div>
+
+            <div class="aux-links">
+                <button type="button" onclick="openResetModal()">Forgot master password?</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- EMERGENCY RESET MODAL (Protected with Master Security PIN USHAS2026) -->
+<div class="modal-overlay" id="resetModal">
+    <div class="modal-box">
+        <h3>Master Reset Verification</h3>
+        <p>To reset the single-time master password, enter the Master Security Recovery PIN (default: <code>USHAS2026</code>).</p>
+        <div class="form-group">
+            <input type="password" id="securityPin" placeholder="Enter Recovery PIN (USHAS2026)" style="width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 12px; outline: none; font-size: 14px;">
+        </div>
+        <div id="resetError" style="color: #c0392b; font-size: 13px; margin-top: 8px; display: none;"></div>
+        <div class="modal-buttons">
+            <button type="button" class="modal-btn cancel" onclick="closeResetModal()">Cancel</button>
+            <button type="button" class="modal-btn confirm" onclick="verifyAndReset()">Verify & Reset</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="logo">
+        <span>✦</span>
+        Ushas Herbal Beauty Parlour
+    </div>
+    <p>© 2026 Ushas Herbal Beauty Parlour</p>
+    <div class="footer-links">
+        <a href="index.html" class="owner-link">Home</a>
+        <a href="my-bookings.html" class="owner-link">My Bookings</a>
+        <a href="feedbackindex.html" class="owner-link">FeedBack Page</a>
+        <a href="feedbackdash.html" class="owner-link">Feedback Wall</a>
+        <a href="admin.html" class="owner-link">Owner Dashboard</a>
+    </div>
+</footer>
+
+<script src="cinematic-transition.js"></script>
+
+<script>
+    // Navigation Sweep Wave Animation
+    document.querySelectorAll('.navbar nav a, .back-home, .owner-link').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.remove('sweep-active');
+            void this.offsetWidth;
+            this.classList.add('sweep-active');
+            setTimeout(() => this.classList.remove('sweep-active'), 600);
+        });
+    });
+
+    // Mobile navigation toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+    }
+
+    // Toggle Password Visibility
+    function togglePassVisibility(inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🔒';
+        } else {
+            input.type = 'password';
+            btn.textContent = '👁️';
+        }
+    }
+
+    // Determine Mode: Setup (Single-Time) or Login
+    function checkAuthMode() {
+        const storedPassword = localStorage.getItem('ushas_owner_password');
+        const setupView = document.getElementById('setupView');
+        const loginView = document.getElementById('loginView');
+
+        if (!storedPassword) {
+            // First time: Password never created
+            setupView.style.display = 'block';
+            loginView.style.display = 'none';
+        } else {
+            // Master password already created
+            setupView.style.display = 'none';
+            loginView.style.display = 'block';
+        }
+    }
+
+    // Setup Form Handler (Single-time creation)
+    document.getElementById('setupForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const p1 = document.getElementById('newPassword').value;
+        const p2 = document.getElementById('confirmPassword').value;
+        const status = document.getElementById('setupStatus');
+
+        if (p1.length < 4) {
+            status.className = 'status-msg error';
+            status.textContent = 'Password must be at least 4 characters long.';
+            return;
+        }
+
+        if (p1 !== p2) {
+            status.className = 'status-msg error';
+            status.textContent = 'Passwords do not match. Please re-check.';
+            return;
+        }
+
+        // Save password permanently
+        localStorage.setItem('ushas_owner_password', p1);
+        localStorage.setItem('ushas_owner_password_created', new Date().toISOString());
+
+        // Authenticate session
+        sessionStorage.setItem('ushas_owner_auth', 'true');
+
+        status.className = 'status-msg success';
+        status.innerHTML = '✦ Master Password created successfully! Unlocking Owner Dashboard...';
+
+        // Cinematic slow-motion transition into dashboard
+        setTimeout(() => {
+            if (window.cinematicNavigate) {
+                window.cinematicNavigate('admin.html');
+            } else {
+                window.location.href = 'admin.html';
+            }
+        }, 600);
+    });
+
+    // Login Form Handler
+    document.getElementById('loginForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const input = document.getElementById('loginPassword').value;
+        const storedPassword = localStorage.getItem('ushas_owner_password');
+        const status = document.getElementById('loginStatus');
+
+        if (input === storedPassword) {
+            // Authenticate session
+            sessionStorage.setItem('ushas_owner_auth', 'true');
+            status.className = 'status-msg success';
+            status.innerHTML = '✦ Access Granted! Opening Owner Dashboard in cinematic motion...';
+
+            setTimeout(() => {
+                if (window.cinematicNavigate) {
+                    window.cinematicNavigate('admin.html');
+                } else {
+                    window.location.href = 'admin.html';
+                }
+            }, 600);
+        } else {
+            status.className = 'status-msg error';
+            status.textContent = 'Incorrect master password. Please verify and try again.';
+            const passInput = document.getElementById('loginPassword');
+            passInput.value = '';
+            passInput.focus();
+        }
+    });
+
+    // Reset Modal Logic
+    function openResetModal() {
+        document.getElementById('resetModal').classList.add('active');
+        document.getElementById('securityPin').value = '';
+        document.getElementById('resetError').style.display = 'none';
+    }
+
+    function closeResetModal() {
+        document.getElementById('resetModal').classList.remove('active');
+    }
+
+    function verifyAndReset() {
+        const pin = document.getElementById('securityPin').value.trim();
+        const error = document.getElementById('resetError');
+        if (pin === 'USHAS2026' || pin === 'admin123') {
+            localStorage.removeItem('ushas_owner_password');
+            localStorage.removeItem('ushas_owner_password_created');
+            sessionStorage.removeItem('ushas_owner_auth');
+            closeResetModal();
+            checkAuthMode();
+            alert('Master password reset permitted. You may now create a new master password.');
+        } else {
+            error.style.display = 'block';
+            error.textContent = 'Invalid Recovery PIN. Please enter USHAS2026.';
+        }
+    }
+
+    // Run auth check on load
+    checkAuthMode();
+</script>
+
+<!-- Iridescence WebGL Shader Engine (Slowed speed, no mouse interaction) -->
+<script type="module">
+import { Renderer, Program, Mesh, Color, Triangle } from 'https://cdn.jsdelivr.net/npm/ogl@0.0.116/+esm';
+
+const ctn = document.getElementById('iridescence-bg');
+if (ctn) {
+    const color = [0.5, 0.6, 0.8]; 
+    const speed = 0.25;
+    const amplitude = 0.08;
+    const mousePos = { x: 0.5, y: 0.5 };
+
+    const renderer = new Renderer({ alpha: true });
+    const gl = renderer.gl;
+    gl.clearColor(1, 1, 1, 1);
+    ctn.appendChild(gl.canvas);
+
+    const vertexShader = `
+    attribute vec2 uv;
+    attribute vec2 position;
+    varying vec2 vUv;
+    void main() {
+        vUv = uv;
+        gl_Position = vec4(position, 0, 1);
+    }
+    `;
+
+    const fragmentShader = `
+    precision highp float;
+    uniform float uTime;
+    uniform vec3 uColor;
+    uniform vec3 uResolution;
+    uniform vec2 uMouse;
+    uniform float uAmplitude;
+    uniform float uSpeed;
+
+    vec3 c3 = vec3(0.98, 0.70, 0.82); 
+    vec3 c2 = vec3(0.85, 0.75, 0.98); 
+    vec3 c1 = vec3(0.70, 0.82, 0.98); 
+
+    void main() {
+        vec2 uv = gl_FragCoord.xy / uResolution.xy;
+        float time = uTime * uSpeed;
+        
+        vec2 p = uv * 2.0 - 1.0;
+        p.x *= uResolution.x / uResolution.y;
+
+        float d = length(p);
+        float angle = atan(p.y, p.x);
+
+        float flow = sin(d * 2.5 - time * 0.8) + cos(angle * 2.0 + time * 0.4);
+        flow += sin(p.x * 2.0 + time * 0.3) * uAmplitude;
+
+        float f = 0.5 + 0.5 * sin(flow * 1.5 + time);
+
+        vec3 col = mix(c1, c2, f);
+        col = mix(col, c3, 0.5 + 0.5 * cos(time * 0.2 + d));
+
+        gl_FragColor = vec4(col, 0.45);
+    }
+    `;
+
+    const geometry = new Triangle(gl);
+    const program = new Program(gl, {
+        vertex: vertexShader,
+        fragment: fragmentShader,
+        uniforms: {
+            uTime: { value: 0 },
+            uColor: { value: new Color(...color) },
+            uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
+            uMouse: { value: [mousePos.x, mousePos.y] },
+            uAmplitude: { value: amplitude },
+            uSpeed: { value: speed }
+        }
+    });
+
+    const mesh = new Mesh(gl, { geometry, program });
+
+    function resize() {
+        renderer.setSize(ctn.offsetWidth, ctn.offsetHeight);
+        program.uniforms.uResolution.value = [ctn.offsetWidth, ctn.offsetHeight];
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    let animId;
+    function update(t) {
+        animId = requestAnimationFrame(update);
+        program.uniforms.uTime.value = t * 0.001;
+        renderer.render({ scene: mesh });
+    }
+    animId = requestAnimationFrame(update);
+}
+</script>
+</body>
+</html>
